@@ -1,11 +1,18 @@
+import "reflect-metadata";
 import createError from "http-errors";
 import express, { Request, Response, NextFunction } from "express";
 import path from "path";
 import cookieParser from "cookie-parser";
 import logger from "morgan";
-import indexRouter from "./routes/index";
+import cors from "cors";
+import { config } from "dotenv";
+import { useExpressServer, useContainer } from "routing-controllers";
+
+config();
 
 const app = express();
+
+app.use(cors());
 
 app.use(logger("dev"));
 app.use(express.json());
@@ -13,22 +20,16 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 
-app.use("/", indexRouter);
+import Container from "typedi";
+import MemberService from "./src/service/MemberService";
+import MemberController from "./src/controllers/MemberController";
 
-// catch 404 and forward to error handler
-app.use((req: Request, res: Response, next: NextFunction) => {
-  next(createError(404));
-});
+Container.set(MemberService, new MemberService());
 
-// error handler
-app.use((err: any, req: Request, res: Response, next: NextFunction) => {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get("env") === "development" ? err : {};
+useContainer(Container);
 
-  // render the error page
-  res.status(err.status || 500);
-  res.render("error");
+useExpressServer(app, {
+  controllers: [MemberController],
 });
 
 export default app;
