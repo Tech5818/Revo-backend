@@ -29,6 +29,13 @@ const normalizePort = (val: any) => {
 };
 
 /**
+ * Get port from environment and store in Express.
+ */
+
+const port = normalizePort(process.env.PORT || "8000");
+app.set("port", port);
+
+/**
  * Event listener for HTTP server "error" event.
  */
 
@@ -62,14 +69,15 @@ const onListening = () => {
   const addr = server.address();
   const bind = typeof addr === "string" ? "pipe " + addr : "port " + addr!.port;
   debug("Listening on " + bind);
+  console.log(`🚀 Running port ${port}`);
 };
 
-/**
- * Get port from environment and store in Express.
- */
+import * as mongoDB from "../src/config/db.ts";
 
-const port = normalizePort(process.env.PORT || "8000");
-app.set("port", port);
+mongoDB.mongo_member();
+mongoDB.mongo_upcycling();
+mongoDB.mongo_feed();
+mongoDB.mongo_collection();
 
 /**
  * Create HTTP server.
