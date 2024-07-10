@@ -20,19 +20,18 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 
-import * as mongoDB from "./src/config/db.ts";
-mongoDB.mongo_member();
-
 import Container from "typedi";
-import MemberService from "./src/service/MemberService";
-import MemberController from "./src/controllers/MemberController";
+import { MemberService } from "./src/service/MemberService";
+import { MemberController } from "./src/controllers/MemberController";
+import { MemberRepository } from "./src/repository/MemberRepository";
+import { AuthController } from "./src/controllers/AuthController";
 
-Container.set(MemberService, new MemberService());
+Container.set(MemberService, new MemberService(MemberRepository));
 
 useContainer(Container);
 
 useExpressServer(app, {
-  controllers: [MemberController],
+  controllers: [MemberController, AuthController],
 });
 
 export default app;

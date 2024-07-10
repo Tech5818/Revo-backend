@@ -1,11 +1,11 @@
-import { Get, JsonController, Res } from "routing-controllers";
+import { Body, Get, JsonController, Post, Res } from "routing-controllers";
 import { Service } from "typedi";
-import MemberService from "../service/MemberService";
+import { MemberService } from "../service/MemberService";
 import { Response } from "express";
 
 @JsonController("/member")
 @Service()
-export default class MemberController {
+export class MemberController {
   constructor(private memberService: MemberService) {}
 
   @Get("/")
