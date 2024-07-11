@@ -6,7 +6,7 @@ import { Service } from "typedi";
 @JsonController("/auth")
 @Service()
 export class AuthController {
-  @Post("/auth")
+  @Post("/kakao")
   async authToken(@Body() body: { token: string }, @Res() res: Response) {
     try {
       const result = await axios({

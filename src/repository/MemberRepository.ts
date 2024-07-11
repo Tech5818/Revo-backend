@@ -3,6 +3,7 @@ import { IMember } from "./types";
 import { member_connection } from "../config/connection";
 
 const memberSchema: Schema<IMember> = new Schema({
+  kakao_id: { type: Schema.Types.String, required: true },
   name: { type: Schema.Types.String, required: true },
   img: { type: Schema.Types.String, required: true },
   upcycling: [{ type: Schema.Types.ObjectId, ref: "Upcycling" }],

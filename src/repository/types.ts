@@ -1,6 +1,7 @@
 import { Date, Document } from "mongoose";
 
 export interface IMember extends Document {
+  kakao_id: string;
   name: string;
   img: string;
   upcycling?: IUpcycling["_id"][];
