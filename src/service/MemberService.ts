@@ -1,12 +1,12 @@
 import { Service } from "typedi";
 import { MemberRepository } from "../repository/MemberRepository";
-import { IRegisterMember } from "../types/member/MemberType";
+import { ILoginMember } from "../types/member/MemberType";
 
 @Service()
 export class MemberService {
   constructor(private memberRepository: typeof MemberRepository) {}
 
-  async registerMember(user: IRegisterMember) {
+  async createMember(user: ILoginMember) {
     try {
       const create_user = await this.memberRepository.create(user);
 

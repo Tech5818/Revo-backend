@@ -14,8 +14,8 @@ export interface IMember extends Document {
 export interface IUpcycling extends Document {
   user_id: IMember["_id"];
   material: string;
-  name: string;
-  how: string;
+  img: string;
+  recommend: string;
 }
 
 export interface IFeed extends Document {

@@ -25,13 +25,20 @@ import { MemberService } from "./src/service/MemberService";
 import { MemberController } from "./src/controllers/MemberController";
 import { MemberRepository } from "./src/repository/MemberRepository";
 import { AuthController } from "./src/controllers/AuthController";
+import { UpcyclingService } from "./src/service/UpcyclingService";
+import { UpcyclingRepository } from "./src/repository/UpcyclingRepository";
+import { UpcyclingConntroller } from "./src/controllers/UpcyclingController";
 
 Container.set(MemberService, new MemberService(MemberRepository));
+Container.set(
+  UpcyclingService,
+  new UpcyclingService(UpcyclingRepository, MemberRepository)
+);
 
 useContainer(Container);
 
 useExpressServer(app, {
-  controllers: [MemberController, AuthController],
+  controllers: [MemberController, AuthController, UpcyclingConntroller],
 });
 
 export default app;

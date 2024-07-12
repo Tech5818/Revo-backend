@@ -21,7 +21,9 @@ export class JWTUtil {
       return jwt.sign(
         {
           id: user.id,
+          kakao_id: user.kakao_id,
           name: user.name,
+          img: user.img,
         },
         this.secret_key
       );
