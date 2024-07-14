@@ -28,17 +28,26 @@ import { AuthController } from "./src/controllers/AuthController";
 import { UpcyclingService } from "./src/service/UpcyclingService";
 import { UpcyclingRepository } from "./src/repository/UpcyclingRepository";
 import { UpcyclingConntroller } from "./src/controllers/UpcyclingController";
+import { FeedService } from "./src/service/FeedService";
+import { FeedRepository } from "./src/repository/FeedRepository";
+import { FeedController } from "./src/controllers/FeedController";
 
 Container.set(MemberService, new MemberService(MemberRepository));
 Container.set(
   UpcyclingService,
   new UpcyclingService(UpcyclingRepository, MemberRepository)
 );
+Container.set(FeedService, new FeedService(FeedRepository, MemberRepository));
 
 useContainer(Container);
 
 useExpressServer(app, {
-  controllers: [MemberController, AuthController, UpcyclingConntroller],
+  controllers: [
+    MemberController,
+    AuthController,
+    UpcyclingConntroller,
+    FeedController,
+  ],
 });
 
 export default app;
