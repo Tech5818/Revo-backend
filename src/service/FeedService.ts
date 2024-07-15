@@ -26,4 +26,37 @@ export class FeedService {
       throw error;
     }
   }
+
+  async findAll() {
+    try {
+      const feeds = await this.feedRepository.find();
+
+      return feeds;
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  }
+
+  async findById(id: string) {
+    try {
+      const feed = await this.feedRepository.findById(id);
+
+      return feed;
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  }
+
+  async findByUserId(user_id: string) {
+    try {
+      const feeds = await this.feedRepository.find({ user_id });
+
+      return feeds;
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  }
 }

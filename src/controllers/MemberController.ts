@@ -14,6 +14,7 @@ import { Request, Response } from "express";
 import { JWTMiddleware } from "../middleware/JWTMiddleware";
 import { ILoginMember } from "../types/member/MemberType";
 import { JWTUtil } from "../util/JWT";
+import { AuthRequest } from "../types/custom/express/type";
 
 @JsonController("/member")
 @Service()
@@ -85,6 +86,18 @@ export class MemberController {
   ) {
     try {
       const user = await this.memberService.findByKakaoId(kakao_id);
+
+      return res.status(200).json({ data: user });
+    } catch (error) {
+      return res.status(500).json({ error });
+    }
+  }
+
+  @Post("/verifyToken")
+  @UseBefore(JWTMiddleware)
+  async verifyToken(@Req() req: AuthRequest, @Res() res: Response) {
+    try {
+      const user = await this.memberService.findById(req.user?.id);
 
       return res.status(200).json({ data: user });
     } catch (error) {

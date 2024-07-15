@@ -6,10 +6,14 @@ import {
   JsonController,
   Post,
   QueryParam,
+  Req,
   Res,
+  UseBefore,
 } from "routing-controllers";
-import { Response } from "express";
+import { Request, Response } from "express";
 import { ICreatePost } from "../types/upcycling/UpcyclingType";
+import axios from "axios";
+import { upload } from "../../app";
 
 @JsonController("/upcycling")
 @Service()
@@ -66,6 +70,43 @@ export class UpcyclingConntroller {
       const posts = await this.upcyclingService.findAll();
 
       return res.status(200).json({ data: posts });
+    } catch (error) {
+      return res.status(500).json({ error });
+    }
+  }
+
+  @Post("/yolo")
+  @UseBefore(upload.single("file"))
+  async yolo(
+    @Res() res: Response,
+    @Body() body: { file: Buffer },
+    @Req() req: Request
+  ) {
+    try {
+      if (!req.file) {
+        return res.status(400).json({ error: "No file uploaded" });
+      }
+
+      const blob = new Blob([req.file.buffer], {
+        type: req.file.mimetype,
+      });
+
+      const formData = new FormData();
+      formData.append("file", blob, req.file.originalname);
+
+      const result = await axios.post(
+        "http://localhost:8088/yolo/predict",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+
+      console.log(result.data);
+
+      return res.status(200).json({ data: result.data });
     } catch (error) {
       return res.status(500).json({ error });
     }

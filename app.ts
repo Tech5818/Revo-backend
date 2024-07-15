@@ -7,10 +7,15 @@ import logger from "morgan";
 import cors from "cors";
 import { config } from "dotenv";
 import { useExpressServer, useContainer } from "routing-controllers";
+import multer from "multer";
 
 config();
 
 const app = express();
+
+const storage = multer.memoryStorage();
+
+export const upload = multer({ storage });
 
 app.use(cors());
 

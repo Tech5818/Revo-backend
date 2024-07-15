@@ -5,7 +5,9 @@ import {
 } from "routing-controllers";
 import { JWTUtil } from "../util/JWT";
 import { AuthRequest } from "../types/custom/express/type";
+import { Service } from "typedi";
 
+@Service()
 export class JWTMiddleware implements ExpressMiddlewareInterface {
   use(req: AuthRequest, res: Response, next: NextFunction) {
     const authorization = req.headers.authorization;

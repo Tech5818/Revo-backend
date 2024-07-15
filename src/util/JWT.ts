@@ -7,9 +7,9 @@ config();
 export class JWTUtil {
   private static readonly secret_key = process.env.SECRET_KEY!;
 
-  static veriryToken(token: string) {
+  static veriryToken(token: string): OAuthUser {
     try {
-      return jwt.verify(token, this.secret_key);
+      return jwt.verify(token, this.secret_key) as OAuthUser;
     } catch (error) {
       console.error(error);
       throw error;
