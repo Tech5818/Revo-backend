@@ -1,11 +1,4 @@
-import {
-  Body,
-  Get,
-  JsonController,
-  Post,
-  QueryParam,
-  Res,
-} from "routing-controllers";
+import { Body, Delete, Get, JsonController, Post, QueryParam, Res } from "routing-controllers";
 import { Service } from "typedi";
 import { FeedService } from "../service/FeedService";
 import { Response } from "express";
@@ -19,8 +12,7 @@ export class FeedController {
   @Post("/create")
   async createFeed(@Res() res: Response, @Body() body: ICreateFeed) {
     try {
-      if (body.user_id.length !== 24)
-        return res.status(404).json({ error: "Invalid Data" });
+      if (body.user_id.length !== 24) return res.status(404).json({ error: "Invalid Data" });
 
       const feed = await this.feedService.createFeed(body);
 
@@ -44,8 +36,7 @@ export class FeedController {
   @Get("/findById")
   async findById(@Res() res: Response, @QueryParam("id") id: string) {
     try {
-      if (id.length !== 24)
-        return res.status(404).json({ error: "Invalid Data" });
+      if (id.length !== 24) return res.status(404).json({ error: "Invalid Data" });
 
       const feed = await this.feedService.findById(id);
 
@@ -56,17 +47,23 @@ export class FeedController {
   }
 
   @Get("/findByUserId")
-  async findByUserId(
-    @Res() res: Response,
-    @QueryParam("user_id") user_id: string
-  ) {
+  async findByUserId(@Res() res: Response, @QueryParam("user_id") user_id: string) {
     try {
-      if (user_id.length !== 24)
-        return res.status(404).json({ error: "Invalid Data" });
+      if (user_id.length !== 24) return res.status(404).json({ error: "Invalid Data" });
 
       const feeds = await this.feedService.findByUserId(user_id);
 
       return res.status(200).json({ data: feeds });
+    } catch (error) {
+      return res.status(500).json({ error });
+    }
+  }
+
+  @Delete("/deleteById")
+  async deleteById(@Res() res: Response, @QueryParam("id") id: string) {
+    try {
+      const delete_one = this.feedService.deleteById(id);
+      return res.status(200).json({ data: delete_one });
     } catch (error) {
       return res.status(500).json({ error });
     }
