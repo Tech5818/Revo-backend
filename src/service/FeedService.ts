@@ -5,10 +5,7 @@ import { ICreateFeed } from "../types/feed/FeedType";
 
 @Service()
 export class FeedService {
-  constructor(
-    private feedRepository: typeof FeedRepository,
-    private memberRepository: typeof MemberRepository
-  ) {}
+  constructor(private feedRepository: typeof FeedRepository, private memberRepository: typeof MemberRepository) {}
 
   async createFeed(data: ICreateFeed) {
     try {
@@ -54,6 +51,17 @@ export class FeedService {
       const feeds = await this.feedRepository.find({ user_id });
 
       return feeds;
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  }
+
+  async deleteById(id: string) {
+    try {
+      const delete_one = await this.feedRepository.deleteOne({ _id: id });
+
+      return delete_one;
     } catch (error) {
       console.error(error);
       throw error;

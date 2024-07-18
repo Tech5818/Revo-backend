@@ -1,12 +1,11 @@
 import {
   Body,
+  Delete,
   Get,
   JsonController,
   Post,
   QueryParam,
-  Req,
   Res,
-  UseBefore,
 } from "routing-controllers";
 import { Service } from "typedi";
 import { FeedService } from "../service/FeedService";
@@ -81,6 +80,16 @@ export class FeedController {
       const feeds = await this.feedService.findByUserId(user_id);
 
       return res.status(200).json({ data: feeds });
+    } catch (error) {
+      return res.status(500).json({ error });
+    }
+  }
+
+  @Delete("/deleteById")
+  async deleteById(@Res() res: Response, @QueryParam("id") id: string) {
+    try {
+      const delete_one = this.feedService.deleteById(id);
+      return res.status(200).json({ data: delete_one });
     } catch (error) {
       return res.status(500).json({ error });
     }
