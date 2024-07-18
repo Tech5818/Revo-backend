@@ -57,4 +57,15 @@ export class UpcyclingService {
       throw error;
     }
   }
+
+  async deleteById(id: string) {
+    try {
+      const delete_one = await this.upcyclingRepository.deleteOne({ _id: id });
+
+      return delete_one;
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  }
 }

@@ -4,12 +4,16 @@ import {
   JsonController,
   Post,
   QueryParam,
+  Req,
   Res,
+  UseBefore,
 } from "routing-controllers";
 import { Service } from "typedi";
 import { FeedService } from "../service/FeedService";
 import { Response } from "express";
 import { ICreateFeed } from "../types/feed/FeedType";
+import { upload } from "../../app";
+import { MulterRequest } from "../types/custom/express/Multer";
 
 @JsonController("/feed")
 @Service()
@@ -17,12 +21,22 @@ export class FeedController {
   constructor(private feedService: FeedService) {}
 
   @Post("/create")
-  async createFeed(@Res() res: Response, @Body() body: ICreateFeed) {
+  @UseBefore(upload.single("img"))
+  async createFeed(
+    @Res() res: Response,
+    @Body() body: ICreateFeed,
+    @Req() req: MulterRequest
+  ) {
     try {
       if (body.user_id.length !== 24)
         return res.status(404).json({ error: "Invalid Data" });
 
-      const feed = await this.feedService.createFeed(body);
+      const feed = await this.feedService.createFeed({
+        user_id: body.user_id,
+        title: body.title,
+        description: body.description,
+        img: req!.file!.location!,
+      });
 
       return res.status(201).json({ data: feed });
     } catch (error) {

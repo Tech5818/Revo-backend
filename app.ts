@@ -7,15 +7,38 @@ import logger from "morgan";
 import cors from "cors";
 import { config } from "dotenv";
 import { useExpressServer, useContainer } from "routing-controllers";
+import { S3Client } from "@aws-sdk/client-s3";
 import multer from "multer";
+import multer_3 from "multer-s3";
 
 config();
 
 const app = express();
 
-const storage = multer.memoryStorage();
+const s3 = new S3Client({
+  credentials: {
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID!,
+    secretAccessKey: process.env.AWS_SECRET_KEY!,
+  },
+  region: "ap-southeast-2",
+});
+
+const storage = multer_3({
+  s3: s3,
+  bucket: "revo-image",
+  acl: "public-read",
+  metadata: (req, file, cd) => {
+    cd(null, { fileName: file.fieldname });
+  },
+  key: (req, file, cb) => {
+    cb(null, Date.now().toString() + "-" + file.originalname);
+  },
+});
 
 export const upload = multer({ storage });
+
+const yolo_storage = multer.memoryStorage();
+export const yolo_upload = multer({ storage: yolo_storage });
 
 app.use(cors());
 

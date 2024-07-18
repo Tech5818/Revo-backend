@@ -17,7 +17,7 @@ export class FeedService {
         user_id: user?.id,
         title: data.title,
         description: data.description,
-        imgs: data.imgs,
+        img: data.img,
       });
 
       return feed;

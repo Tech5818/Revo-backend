@@ -2,6 +2,7 @@ import { Service } from "typedi";
 import { UpcyclingService } from "../service/UpcyclingService";
 import {
   Body,
+  Delete,
   Get,
   JsonController,
   Post,
@@ -13,7 +14,8 @@ import {
 import { Request, Response } from "express";
 import { ICreatePost } from "../types/upcycling/UpcyclingType";
 import axios from "axios";
-import { upload } from "../../app";
+import { upload, yolo_upload } from "../../app";
+import { MulterRequest } from "../types/custom/express/Multer";
 
 @JsonController("/upcycling")
 @Service()
@@ -21,9 +23,20 @@ export class UpcyclingConntroller {
   constructor(private upcyclingService: UpcyclingService) {}
 
   @Post("/create")
-  async createPost(@Res() res: Response, @Body() body: ICreatePost) {
+  @UseBefore(upload.single("img"))
+  async createPost(
+    @Res() res: Response,
+    @Body() body: ICreatePost,
+    @Req() req: MulterRequest
+  ) {
     try {
-      const post = await this.upcyclingService.createPost(body);
+      const post = await this.upcyclingService.createPost({
+        user_id: body.user_id,
+        title: body.title,
+        description: body.description,
+        material: body.material,
+        img: req!.file!.location,
+      });
 
       if (!post) return res.status(404).json({ error: "Invalid Data" });
 
@@ -75,8 +88,19 @@ export class UpcyclingConntroller {
     }
   }
 
+  @Delete("/deleteById")
+  async deleteById(@Res() res: Response, @QueryParam("id") id: string) {
+    try {
+      const delete_one = await this.upcyclingService.deleteById(id);
+
+      return res.status(200).json({ data: delete_one });
+    } catch (error) {
+      return res.status(500).json({ error });
+    }
+  }
+
   @Post("/yolo")
-  @UseBefore(upload.single("file"))
+  @UseBefore(yolo_upload.single("file"))
   async yolo(
     @Res() res: Response,
     @Body() body: { file: Buffer },

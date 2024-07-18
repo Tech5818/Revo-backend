@@ -13,16 +13,17 @@ export interface IMember extends Document {
 
 export interface IUpcycling extends Document {
   user_id: IMember["_id"];
+  title: string;
+  description: string;
   material: string;
   img: string;
-  recommend: string;
 }
 
 export interface IFeed extends Document {
   user_id: IMember["_id"];
   title: string;
   description: string;
-  imgs: string[];
+  img: string;
   like: IMember["_id"][];
 }
 
