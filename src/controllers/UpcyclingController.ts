@@ -30,6 +30,8 @@ export class UpcyclingConntroller {
     @Req() req: MulterRequest
   ) {
     try {
+      console.log(body);
+
       const post = await this.upcyclingService.createPost({
         user_id: body.user_id,
         title: body.title,

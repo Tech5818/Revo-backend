@@ -5,7 +5,10 @@ import { ICreateFeed } from "../types/feed/FeedType";
 
 @Service()
 export class FeedService {
-  constructor(private feedRepository: typeof FeedRepository, private memberRepository: typeof MemberRepository) {}
+  constructor(
+    private feedRepository: typeof FeedRepository,
+    private memberRepository: typeof MemberRepository
+  ) {}
 
   async createFeed(data: ICreateFeed) {
     try {
@@ -16,6 +19,13 @@ export class FeedService {
         description: data.description,
         img: data.img,
       });
+
+      await this.memberRepository.findOneAndUpdate(
+        { _id: user?.id },
+        {
+          $push: { feeds: feed._id },
+        }
+      );
 
       return feed;
     } catch (error) {
@@ -59,8 +69,16 @@ export class FeedService {
 
   async deleteById(id: string) {
     try {
-      const delete_one = await this.feedRepository.deleteOne({ _id: id });
+      const delete_one = await this.feedRepository.findOneAndDelete({
+        _id: id,
+      });
 
+      await this.memberRepository.findOneAndUpdate(
+        { _id: delete_one?.user_id },
+        {
+          $pull: delete_one!.id,
+        }
+      );
       return delete_one;
     } catch (error) {
       console.error(error);
